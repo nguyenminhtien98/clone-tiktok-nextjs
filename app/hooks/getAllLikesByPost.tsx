@@ -1,6 +1,6 @@
 
 import { database, Query } from "../libs/AppWriteClient"
-import useGetProfileByUserId from "../hooks/useGetProfileByUserId";
+import getProfileByUserId from "./getProfileByUserId";
 
 const useGetAllPosts = async () => {
     try {
@@ -12,7 +12,7 @@ const useGetAllPosts = async () => {
         const documents = response.documents;
 
         const objPromises = documents.map(async doc => {
-            const profile = await useGetProfileByUserId(doc?.user_id)
+            const profile = await getProfileByUserId(doc?.user_id)
 
             return {
                 id: doc?.$id,

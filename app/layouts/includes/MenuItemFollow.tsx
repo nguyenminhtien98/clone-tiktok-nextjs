@@ -1,8 +1,11 @@
-import Link from "next/link";
+import useCreateBucketUrl from "../../hooks/useCreateBucketUrl";
 import { MenuItemFollowCompTypes } from "../../types";
-import { AiOutlineCheck } from "react-icons/ai";
+import Link from "next/link";
 
 export default function MenuItemFollow({ user }: MenuItemFollowCompTypes) {
+
+  const imageUrl = useCreateBucketUrl(user?.image || "");
+
   return (
     <>
       <Link
@@ -12,21 +15,14 @@ export default function MenuItemFollow({ user }: MenuItemFollowCompTypes) {
         <img
           className="rounded-full lg:mx-0 mx-auto"
           width="35"
-          src={user?.image}
+          src={imageUrl}
         />
-
         <div className="lg:pl-2.5 lg:block hidden">
           <div className="flex items-center">
             <p className="font-bold text-[14px] truncate">{user?.name}</p>
-            <p className="ml-1 rounded-full bg-[#58D5EC h-[14px] relative">
-              <AiOutlineCheck
-                className="relative p-[3px]"
-                color="#FFFFFF"
-                size="15"
-              />
-            </p>
           </div>
-          <p className="font-light text-[12px] text-gray-600">{user?.name}</p>
+
+          <p className="font-light text-[12px] text-gray-600">_{user?.name}_</p>
         </div>
       </Link>
     </>

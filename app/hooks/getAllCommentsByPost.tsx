@@ -1,5 +1,5 @@
 import { database, Query } from "../libs/AppWriteClient";
-import useGetProfileByUserId from "./useGetProfileByUserId";
+import getProfileByUserId from "./getProfileByUserId";
 
 const useGetCommentsByPostId = async (postId: string) => {
   try {
@@ -10,7 +10,7 @@ const useGetCommentsByPostId = async (postId: string) => {
     );
 
     const objPromises = commentsResult.documents.map(async (comment) => {
-      const profile = await useGetProfileByUserId(comment.user_id);
+      const profile = await getProfileByUserId(comment.user_id);
 
       return {
         id: comment?.$id,

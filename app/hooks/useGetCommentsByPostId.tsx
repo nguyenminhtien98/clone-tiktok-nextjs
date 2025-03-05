@@ -1,7 +1,13 @@
 import { database, Query } from "../libs/AppWriteClient";
-import useGetProfileByUserId from "./useGetProfileByUserId";
+import type { CommentWithProfile } from "../types"; // Import kiểu
+import getProfileByUserId from "./getProfileByUserId";
 
-const useGetCommentsByPostId = async (postId: string) => {
+const getCommentsByPostId = async (postId: string): Promise<CommentWithProfile[]> => {
+  if (!postId) {
+    console.warn("postId is undefined!");
+    return [];
+  }
+
   try {
     const commentsResult = await database.listDocuments(
       String(process.env.NEXT_PUBLIC_DATABASE_ID),
@@ -9,28 +15,35 @@ const useGetCommentsByPostId = async (postId: string) => {
       [Query.equal("post_id", postId), Query.orderDesc("$id")]
     );
 
-    const objPromises = commentsResult.documents.map(async (comment) => {
-      const profile = await useGetProfileByUserId(comment.user_id);
+    if (!commentsResult?.documents || commentsResult.documents.length === 0) {
+      return [];
+    }
 
-      return {
-        id: comment?.$id,
-        user_id: comment?.user_id,
-        post_id: comment?.post_id,
-        text: comment?.text,
-        created_at: comment?.created_at,
-        profile: {
-          user_id: profile?.user_id,
-          name: profile?.name,
-          image: profile?.image,
-        },
-      };
-    });
+    const comments = await Promise.all(
+      commentsResult.documents.map(async (comment) => {
+        let profile = null;
+        try {
+          profile = await getProfileByUserId(comment.user_id);
+        } catch (error) {
+          console.error(`Failed to fetch profile for user ${comment.user_id}:`, error);
+        }
 
-    const result = await Promise.all(objPromises);
-    return result;
-  } catch (error) {
-    throw error;
+        return {
+          id: comment?.$id || crypto.randomUUID(),
+          user_id: comment?.user_id ?? null,
+          post_id: comment?.post_id ?? null,
+          text: comment?.text || "",
+          created_at: comment?.created_at || new Date().toISOString(),
+          profile: profile || null,
+        };
+      })
+    );
+
+    return comments;
+  } catch (err) {
+    console.error("Failed to fetch comments:", err);
+    throw err;
   }
 };
 
-export default useGetCommentsByPostId;
+export default getCommentsByPostId;
