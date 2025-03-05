@@ -9,7 +9,7 @@ export interface UserContextTypes {
   register: (name: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  checkUser: () => Promise<void>;
+  checkUser: () => Promise<User | null>;
   followUser: (followingId: string) => Promise<void>;
   unfollowUser: (followingId: string) => Promise<void>;
   isFollowing: (followingId: string) => Promise<boolean>;
@@ -39,7 +39,7 @@ export interface PostWithProfile {
   created_at: string;
   profile: {
     user_id: string;
-    name: string | undefined; // Cho phép name là string hoặc undefined
+    name: string | undefined;
     image: string | null | undefined;
   };
 }

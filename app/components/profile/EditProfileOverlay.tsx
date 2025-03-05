@@ -19,7 +19,7 @@ export default function EditProfileOverlay() {
   const { currentProfile, setCurrentProfile } = useProfileStore();
   const { setIsEditProfileOpen } = useGeneralStore();
 
-  const contextUser = useUser();
+  const { user: contextUser, checkUser } = useUser();
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
@@ -52,17 +52,28 @@ export default function EditProfileOverlay() {
 
   const updateUserInfo = async () => {
     const isError = validate();
-    if (isError) return;
-    if (!contextUser?.user) return;
+    if (isError || !contextUser) return;
 
     try {
       setIsUpdating(true);
       await updateProfile(currentProfile?.id || "", userName, userBio);
-      setCurrentProfile(contextUser?.user?.id);
+
+      const updatedUser = await checkUser();
+      if (updatedUser) {
+        setCurrentProfile({
+          id: updatedUser.id,
+          user_id: updatedUser.id,
+          name: userName,
+          bio: userBio,
+          image: userImage,
+        });
+      }
+
       setIsEditProfileOpen(false);
       router.refresh();
     } catch (error) {
-      console.log(error);
+      console.error("Error updating profile:", error);
+      setError({ type: "update", message: "Failed to update profile" });
     } finally {
       setIsUpdating(false);
     }
@@ -70,23 +81,33 @@ export default function EditProfileOverlay() {
 
   const cropAndUpdateImage = async () => {
     const isError = validate();
-    if (isError) return;
-    if (!contextUser?.user) return;
+    if (isError || !contextUser || !file || !cropper) {
+      if (!file) alert("You have no file");
+      if (!cropper) alert("You have no cropper data");
+      return;
+    }
 
     try {
-      if (!file) return alert("You have no file");
-      if (!cropper) return alert("You have no cropper data");
       setIsUpdating(true);
-
       const newImageId = await changeUserImage(file, cropper, userImage);
       await updateProfileImage(currentProfile?.id || "", newImageId);
 
-      await contextUser.checkUser();
-      setCurrentProfile(contextUser?.user?.id);
+      const updatedUser = await checkUser();
+      if (updatedUser) {
+        setCurrentProfile({
+          id: updatedUser.id,
+          user_id: updatedUser.id,
+          name: userName,
+          bio: userBio,
+          image: newImageId,
+        });
+      }
+
       setIsEditProfileOpen(false);
+      router.refresh();
     } catch (error) {
-      console.log(error);
-      alert(error);
+      console.error("Error updating image:", error);
+      alert("Failed to update image");
     } finally {
       setIsUpdating(false);
     }

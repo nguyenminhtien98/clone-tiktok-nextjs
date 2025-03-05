@@ -17,7 +17,7 @@ const defaultContext: UserContextTypes = {
   register: async () => {},
   login: async () => {},
   logout: async () => {},
-  checkUser: async () => {},
+  checkUser: async () => null,
   followUser: async () => {},
   unfollowUser: async () => {},
   isFollowing: async () => false,
@@ -32,19 +32,17 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(true);
 
-  const checkUser = async () => {
+  const checkUser = async (): Promise<User | null> => {
     try {
-      const sessions = await account.listSessions();
-      
-      if (sessions.total === 0) {
+      const currentSession = await account.getSession("current");
+      if (!currentSession) {
         setUser(null);
         setLoading(false);
         return null;
       }
 
-      const currentUser = await account.get();
-      
-      const profile = await getProfileByUserId(currentUser.$id);
+      const promise = await account.get();
+      const profile = await getProfileByUserId(promise.$id);
 
       if (!profile) {
         setUser(null);
@@ -52,18 +50,23 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         return null;
       }
 
-      const userData = {
-        id: currentUser.$id,
-        name: currentUser.name,
+      const userData: User = {
+        id: promise.$id,
+        name: promise.name,
         bio: profile.bio,
         image: profile.image,
       };
-
       setUser(userData);
       setLoading(false);
       return userData;
-    } catch (error: any) {
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error && "code" in error && error.code === 401) {
+        setUser(null);
+        setLoading(false);
+        return null;
+      }
+
+      console.error("Check user error:", error);
       setUser(null);
       setLoading(false);
       return null;
@@ -77,7 +80,12 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     verifyUser();
   }, []);
 
-  const createProfile = async (userId: string, name: string, image: string, bio: string) => {
+  const createProfile = async (
+    userId: string,
+    name: string,
+    image: string,
+    bio: string
+  ) => {
     try {
       await database.createDocument(
         String(process.env.NEXT_PUBLIC_DATABASE_ID),
@@ -99,7 +107,9 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const register = async (name: string, email: string, password: string) => {
     try {
       if (!email || !password || password.length < 8) {
-        throw new Error("Invalid email or password. Password must be at least 8 characters.");
+        throw new Error(
+          "Invalid email or password. Password must be at least 8 characters."
+        );
       }
 
       try {
@@ -115,18 +125,22 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       await account.createEmailPasswordSession(email, password);
 
-      const defaultImageId = String(process.env.NEXT_PUBLIC_PLACEHOLDER_DEFAULT_IMAGE_ID);
+      const defaultImageId = String(
+        process.env.NEXT_PUBLIC_PLACEHOLDER_DEFAULT_IMAGE_ID
+      );
       if (!defaultImageId) {
-        throw new Error("Default avatar ID is not defined in environment variables.");
+        throw new Error(
+          "Default avatar ID is not defined in environment variables."
+        );
       }
 
       await createProfile(promise.$id, name, defaultImageId, "");
       await checkUser();
-    } catch (error: any) {
-      if (error.message.includes("A user with the same id, email, or phone already exists")) {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message.includes("A user with the same id, email, or phone already exists")) {
         throw new Error("A user with this email already exists. Please use a different email or log in.");
       }
-      console.error(error);
+      console.error("Registration error:", error);
       throw error;
     }
   };
@@ -135,10 +149,9 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const session = await account.createEmailPasswordSession(email, password);
-      
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const userData = await checkUser();
-      
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
       throw error;
