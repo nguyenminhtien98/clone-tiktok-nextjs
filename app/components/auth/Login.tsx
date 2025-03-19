@@ -27,10 +27,10 @@ export default function Login() {
         let isError = false
 
         if (!email) {
-            setError({ type: 'email', message: 'An Email is required'})
+            setError({ type: 'email', message: 'Email là bắt buộc'})
             isError = true
         } else if (!password) {
-            setError({ type: 'password', message: 'A Password is required'})
+            setError({ type: 'password', message: 'Mật khẩu là bắt buộc'})
             isError = true
         }
         return isError

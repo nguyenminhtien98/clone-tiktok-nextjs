@@ -29,7 +29,7 @@ export default function AuthOverlay() {
 
           {isRegister ? <Register /> : <Login />}
 
-          <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 border-t w-full">
+          <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 w-full">
             <span className="text-[14px] text-gray-600">
               Don’t have an account?
             </span>

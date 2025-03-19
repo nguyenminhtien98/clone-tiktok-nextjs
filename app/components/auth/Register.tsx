@@ -26,34 +26,56 @@ export default function Register() {
     return "";
   };
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[a-zA-Z0-9]+@gmail\.com$/;
+    return emailRegex.test(email);
+  };
+
   const validate = () => {
     setError(null);
     let isError = false;
-
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
+  
     if (!name) {
-      setError({ type: "name", message: "A Name is required" });
+      setError({ type: "name", message: "Tên là bắt buộc" });
       isError = true;
-    } else if (!email) {
-      setError({ type: "email", message: "An Email is required" });
+    } 
+    else if (!email) {
+      setError({ type: "email", message: "Email là bắt buộc" });
       isError = true;
-    } else if (!reg.test(email)) {
-      setError({ type: "email", message: "The Email is not valid" });
+    } else if (!email.includes("@gmail.com")) {
+      setError({ type: "email", message: "Email phải là địa chỉ Gmail kết thúc bằng @gmail.com" });
       isError = true;
-    } else if (!password) {
-      setError({ type: "password", message: "A Password is required" });
+    } else if (!validateEmail(email)) {
+      setError({ type: "email", message: "Email chỉ được chứa chữ cái và số trước @gmail.com" });
+      isError = true;
+    } 
+    else if (!password) {
+      setError({ type: "password", message: "Mật khẩu là bắt buộc" });
       isError = true;
     } else if (password.length < 8) {
-      setError({
-        type: "password",
-        message: "The Password needs to be longer",
-      });
+      setError({ type: "password", message: "Mật khẩu phải dài ít nhất 8 ký tự" });
       isError = true;
-    } else if (password != confirmPassword) {
-      setError({ type: "password", message: "The Passwords do not match" });
+    } else if (!/[A-Z]/.test(password)) {
+      setError({ type: "password", message: "Mật khẩu phải chứa ít nhất một chữ cái in hoa" });
+      isError = true;
+    } else if (!/[a-z]/.test(password)) {
+      setError({ type: "password", message: "Mật khẩu phải chứa ít nhất một chữ cái thường" });
+      isError = true;
+    } else if (!/[0-9]/.test(password)) {
+      setError({ type: "password", message: "Mật khẩu phải chứa ít nhất một số" });
+      isError = true;
+    } else if (!/[!@#$%^&*]/.test(password)) {
+      setError({ type: "password", message: "Mật khẩu phải chứa ít nhất một ký tự đặc biệt (!@#$%^&*)" });
+      isError = true;
+    } else if (/\s/.test(password)) {
+      setError({ type: "password", message: "Mật khẩu không được chứa khoảng trắng" });
+      isError = true;
+    } 
+    else if (password !== confirmPassword) {
+      setError({ type: "password", message: "Mật khẩu không khớp" });
       isError = true;
     }
+  
     return isError;
   };
 
