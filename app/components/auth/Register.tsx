@@ -144,7 +144,7 @@ export default function Register() {
 
         <div className="px-6 pb-2 mt-6">
           <button
-            disabled={loading}
+            disabled={loading || !name || !email || !password || !confirmPassword}
             onClick={() => register()}
             className={`
                             flex items-center justify-center w-full text-[17px] font-semibold text-white py-3 rounded-sm

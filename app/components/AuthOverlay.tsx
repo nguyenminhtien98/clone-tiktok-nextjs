@@ -17,7 +17,7 @@ export default function AuthOverlay() {
         id="AuthOverlay"
         className="fixed flex items-center justify-center z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50"
       >
-        <div className="relative bg-white w-full max-w-[470px] h-[70%] p-4 rounded-lg">
+        <div className="relative bg-white w-full max-w-[470px] p-4 rounded-lg">
           <div className="w-full flex justify-end">
             <button
               onClick={() => setIsLoginOpen(false)}
@@ -29,7 +29,7 @@ export default function AuthOverlay() {
 
           {isRegister ? <Register /> : <Login />}
 
-          <div className="absolute flex items-center justify-center py-5 left-0 bottom-0 w-full">
+          <div className="flex items-center justify-center py-5 w-full">
             <span className="text-[14px] text-gray-600">
               Don’t have an account?
             </span>
