@@ -42,7 +42,9 @@ export default function NotificationsPanel({ isOpen, onClose }: NotificationsPan
                     return n;
                 })
             );
-
+            const filteredSelf = arr.filter(n => n.fromUserId !== user!.id);
+            setNotifications(filteredSelf);
+            setLoading(false);
             setNotifications(withFollowed);
             setLoading(false);
         })();
@@ -111,7 +113,6 @@ export default function NotificationsPanel({ isOpen, onClose }: NotificationsPan
                             item={item}
                             followUser={followUser}
                             onNavigate={() => router.push(`/post/${item.postId}/${item.toUserId}`)}
-                            initialFollowed={item.initialFollowed}
                         />
                     ))
                 )}

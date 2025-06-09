@@ -25,7 +25,7 @@ export default function FollowedPage() {
             const list = await getFollowingList();
             const arr = await Promise.all(list.map(f => getPostsByUser(f.id)));
             const merged = arr.flat().sort((a, b) => b.created_at.localeCompare(a.created_at));
-            setFollowedPosts(merged);
+            setFollowedPosts(merged as PostWithProfile[]);
             setLoading(false);
         })();
     }, [user, getFollowingList]);
