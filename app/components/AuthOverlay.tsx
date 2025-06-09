@@ -9,8 +9,6 @@ export default function AuthOverlay() {
 
   const [isRegister, setIsRegister] = useState<boolean>(false);
 
-  console.log("isRegister", isRegister)
-
   return (
     <>
       <div

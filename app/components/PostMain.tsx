@@ -16,7 +16,7 @@ export default function PostMain({ post }: PostMainCompTypes) {
   const [isFollowingUser, setIsFollowingUser] = useState(false);
   const videoUrl = useCreateBucketUrl(post?.video_id);
   const profileImageUrl = useCreateBucketUrl(post?.profile?.image);
-  const { setIsLoginOpen} = useGeneralStore();
+  const { setIsLoginOpen } = useGeneralStore();
 
   useEffect(() => {
     const video = document.getElementById(
@@ -43,8 +43,14 @@ export default function PostMain({ post }: PostMainCompTypes) {
   }, [post?.id, videoUrl]);
 
   useEffect(() => {
+    if (context.user) {
+      checkFollowStatus();
+    }
+  }, [context.user]);
+
+  useEffect(() => {
     checkFollowStatus();
-  }, [post.profile.user_id, user?.id]);
+  }, [post.profile.user_id]);
 
   const checkFollowStatus = async () => {
     if (user && user.id !== post.profile.user_id && context.isFollowing) {
@@ -75,6 +81,16 @@ export default function PostMain({ post }: PostMainCompTypes) {
     }
   };
 
+  useEffect(() => {
+    function onFollowed(e: CustomEvent) {
+      if (e.detail.userId === post.profile.user_id) {
+        checkFollowStatus();
+      }
+    }
+    window.addEventListener("user-followed", onFollowed as EventListener);
+    return () => window.removeEventListener("user-followed", onFollowed as EventListener);
+  }, [post.profile.user_id]);
+
   return (
     <div id={`PostMain-${post.id}`} className="flex border-b py-6">
       <div className="cursor-pointer">
@@ -95,11 +111,10 @@ export default function PostMain({ post }: PostMainCompTypes) {
           {(!user || user.id !== post.profile?.user_id) && (
             <button
               onClick={handleFollowToggle}
-              className={`border text-[15px] px-[21px] py-0.5 border-[#F02C56] ${
-                !isFollowingUser
-                  ? "bg-[#F02C56] text-white"
-                  : "text-[#F02C56] hover:bg-[#ffeef2]"
-              }  font-semibold rounded-md`}
+              className={`border text-[15px] px-[21px] py-0.5 border-[#F02C56] ${!isFollowingUser
+                ? "bg-[#F02C56] text-white"
+                : "text-[#F02C56] hover:bg-[#ffeef2]"
+                }  font-semibold rounded-md`}
             >
               {isFollowingUser ? "Đang Follow" : "Follow"}
             </button>

@@ -11,15 +11,16 @@ import { account, ID, database, Query } from "../libs/AppWriteClient";
 import { User, UserContextTypes } from "../types";
 import { useRouter } from "next/navigation";
 import getProfileByUserId from "../hooks/getProfileByUserId";
+import useCreateNotification from "../hooks/useCreateNotification";
 
 const defaultContext: UserContextTypes = {
   user: null,
-  register: async () => {},
-  login: async () => {},
-  logout: async () => {},
+  register: async () => { },
+  login: async () => { },
+  logout: async () => { },
   checkUser: async () => null,
-  followUser: async () => {},
-  unfollowUser: async () => {},
+  followUser: async () => { },
+  unfollowUser: async () => { },
   isFollowing: async () => false,
   getFollowingList: async () => [],
 };
@@ -113,7 +114,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       }
 
       try {
-        await account.deleteSession("current").catch(() => {});
+        await account.deleteSession("current").catch(() => { });
       } catch (error) {
         console.log(error);
       }
@@ -168,6 +169,8 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
+  const { createNotification } = useCreateNotification();
+
   const followUser = async (followingId: string) => {
     if (!user) throw new Error("You must be logged in to follow.");
 
@@ -181,8 +184,18 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           followingId: followingId,
         }
       );
-      console.log(`User ${user.id} followed ${followingId}`);
+
+      await createNotification({
+        type: "follow",
+        fromUserId: user.id,
+        toUserId: followingId,
+      });
+
       await checkUser();
+
+      window.dispatchEvent(
+        new CustomEvent("user-followed", { detail: { userId: followingId } })
+      );
     } catch (error) {
       console.error(error);
       throw error;

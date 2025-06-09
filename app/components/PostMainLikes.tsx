@@ -95,7 +95,7 @@ export default function PostMainLikes({ post }: PostMainLikesCompTypes) {
   const like = async () => {
     setHasClickedLike(true);
     try {
-      await createLike(contextUser?.user?.id || "", post?.id);
+      await createLike(contextUser?.user?.id || "", post?.id, post.profile.user_id);
       await getAllLikesByPost();
       hasUserLikedPost();
     } catch (err) {
@@ -112,7 +112,7 @@ export default function PostMainLikes({ post }: PostMainLikesCompTypes) {
       await getAllLikesByPost();
       hasUserLikedPost();
     } catch (err) {
-      console.error( err);
+      console.error(err);
     } finally {
       setHasClickedLike(false);
     }

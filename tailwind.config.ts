@@ -13,6 +13,21 @@ export default {
         foreground: "var(--foreground)",
       },
     },
+    keyframes: {
+      clockwise: {
+        "0%": { transform: "translateX(0)", width: "20px" },
+        "25%": { width: "25px" },
+        "50%": { transform: "translateX(100%)", width: "20px" },
+      },
+      counterClockwise: {
+        "0%": { transform: "translateX(0)" },
+        "50%": { transform: "translateX(-100%)" },
+      },
+    },
+    animation: {
+      clockwise: "clockwise 1.2s linear infinite",
+      "counter-clockwise": "counterClockwise 1.2s linear infinite",
+    },
   },
   plugins: [],
 } satisfies Config;

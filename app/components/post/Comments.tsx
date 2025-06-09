@@ -41,7 +41,7 @@ export default function Comments({ params }: CommentsCompTypes) {
 
     try {
       setIsUploading(true);
-      await createComment(contextUser?.user?.id, params?.postId, comment);
+      await createComment(contextUser?.user?.id, params?.postId, comment, params.userId);
       const updatedComments = await getCommentsByPostId(params?.postId) || [];
       setCommentsByPost(params?.postId, updatedComments);
       setComment("");

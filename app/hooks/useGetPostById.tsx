@@ -2,6 +2,9 @@ import { database } from "../libs/AppWriteClient";
 import { PostWithProfile } from "../types";
 
 const getPostById = async (postId: string): Promise<PostWithProfile | null> => {
+  if (!postId) {
+    return null;
+  }
   try {
     const response = await database.getDocument(
       String(process.env.NEXT_PUBLIC_DATABASE_ID),

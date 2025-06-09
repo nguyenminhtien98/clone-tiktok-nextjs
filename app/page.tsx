@@ -1,14 +1,30 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import MainLayout from "./layouts/MainLayout"
 import { usePostStore } from "@/app/stores/post"
 import ClientOnly from "./components/ClientOnly"
 import PostMain from "./components/PostMain"
+import Loading from "./components/Loading"
 
 export default function Home() {
   const { allPosts, setAllPosts } = usePostStore();
-  useEffect(() => { setAllPosts()}, [])
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      await setAllPosts();
+      setLoading(false);
+    })();
+  }, [setAllPosts]);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>

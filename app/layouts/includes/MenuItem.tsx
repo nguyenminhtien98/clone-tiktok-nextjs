@@ -4,6 +4,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { RiGroupLine } from "react-icons/ri";
 import { BsCameraVideo } from "react-icons/bs";
 import { MenuItemTypes } from "../../types";
+import { BiCommentMinus } from "react-icons/bi";
 
 export default function MenuItem({
   iconString,
@@ -15,6 +16,8 @@ export default function MenuItem({
       return <AiOutlineHome size={sizeString} color={colorString} />;
     if (iconString == "Following")
       return <RiGroupLine size={sizeString} color={colorString} />;
+    if (iconString == "Thông báo")
+      return <BiCommentMinus size={sizeString} color={colorString} />;
     if (iconString == "LIVE")
       return <BsCameraVideo size={sizeString} color={colorString} />;
   };

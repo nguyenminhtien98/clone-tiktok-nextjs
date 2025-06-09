@@ -73,7 +73,7 @@ export default function CommentsHeader({
   const like = async () => {
     try {
       setHasClickedLike(true);
-      await createLike(contextUser?.user?.id || "", params.postId);
+      await createLike(contextUser?.user?.id || "", params.postId, post.profile.user_id);
       setLikesByPost(params.postId);
       setHasClickedLike(false);
     } catch (error) {

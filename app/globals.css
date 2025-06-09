@@ -7,13 +7,15 @@
   fill: currentColor;
 }
 
-#SideNavMain {
+#SideNavMain,
+.scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
   overflow-y: auto;
 }
 
 /* Ẩn thanh scrollbar cho WebKit (Chrome, Safari, Edge) */
-#SideNavMain::-webkit-scrollbar {
+#SideNavMain::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
