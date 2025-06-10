@@ -135,13 +135,13 @@ export default function EditProfileOverlay() {
     <>
       <div
         id="EditProfileOverlay"
-        className="fixed flex justify-center pt-14 md:pt-[105px] z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50 overflow-auto"
+        className="scrollbar-hide fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 overflow-auto"
       >
         <div
           className={`
-            relative bg-white w-full max-w-[700px] sm:h-[580px] h-[655px] mx-3 p-4 rounded-lg mb-10
-            ${!uploadedImage ? "h-[655px]" : "h-[580px]"}
-          `}
+        relative bg-white w-full max-w-[700px] sm:h-[580px] h-[655px] mx-3 p-4 rounded-lg my-auto
+        ${!uploadedImage ? "h-[655px]" : "h-[580px]"}
+      `}
         >
           <div className="absolute flex items-center justify-between w-full p-5 left-0 top-0 border-b border-b-gray-300">
             <h1 className="text-[22px] font-medium">Edit profile</h1>
@@ -155,9 +155,7 @@ export default function EditProfileOverlay() {
           </div>
 
           <div
-            className={`h-[calc(500px-200px)] ${
-              !uploadedImage ? "mt-16" : "mt-[58px]"
-            }`}
+            className={`h-[calc(500px-200px)] ${!uploadedImage ? "mt-16" : "mt-[58px]"}`}
           >
             {!uploadedImage ? (
               <div>
@@ -206,13 +204,10 @@ export default function EditProfileOverlay() {
                         error={showError("userName")}
                       />
                       <p
-                        className={`relative text-[11px] text-gray-500 ${
-                          error ? "mt-1" : "mt-4"
-                        }`}
+                        className={`relative text-[11px] text-gray-500 ${error ? "mt-1" : "mt-4"}`}
                       >
-                        Usernames can only contain letters, numbers,
-                        underscores, and periods. Changing your username will
-                        also change your profile link.
+                        Usernames can only contain letters, numbers, underscores, and periods.
+                        Changing your username will also change your profile link.
                       </p>
                     </div>
                   </div>
@@ -234,17 +229,9 @@ export default function EditProfileOverlay() {
                         value={userBio || ""}
                         maxLength={80}
                         className="
-                          resize-none
-                          w-full
-                          bg-[#F1F1F2]
-                          text-gray-800
-                          border
-                          border-gray-300
-                          rounded-md
-                          py-2.5
-                          px-3
-                          focus:outline-none
-                        "
+                      resize-none bg-[#F1F1F2] text-gray-800 border border-gray-300 
+                      rounded-md py-2.5 px-3 focus:outline-none w-full
+                    "
                       ></textarea>
                       <p className="text-[11px] text-gray-500">
                         {userBio ? userBio.length : 0}/80
@@ -272,10 +259,7 @@ export default function EditProfileOverlay() {
             className="absolute p-5 left-0 bottom-0 border-t border-t-gray-300 w-full"
           >
             {!uploadedImage ? (
-              <div
-                id="UpdateInfoButtons"
-                className="flex items-center justify-end"
-              >
+              <div id="UpdateInfoButtons" className="flex items-center justify-end">
                 <button
                   disabled={isUpdating}
                   onClick={() => setIsEditProfileOpen(false)}
@@ -301,10 +285,7 @@ export default function EditProfileOverlay() {
                 </button>
               </div>
             ) : (
-              <div
-                id="CropperButtons"
-                className="flex items-center justify-end"
-              >
+              <div id="CropperButtons" className="flex items-center justify-end">
                 <button
                   onClick={() => setUploadedImage(null)}
                   className="flex items-center border rounded-sm px-3 py-[6px] hover:bg-gray-100"

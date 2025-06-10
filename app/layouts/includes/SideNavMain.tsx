@@ -47,6 +47,10 @@ export default function SideNavMain() {
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, [isActivityOpen]);
 
+  const filteredRandomUsers = randomUsers
+    .filter((u) => !followingList.some((f) => f.id === u.id))
+    .slice(0, 4);
+
   return (
     <div
       id="SideNavMain"
@@ -94,14 +98,14 @@ export default function SideNavMain() {
           <MenuItem iconString="LIVE" colorString="#000" sizeString="25" />
           <div className="border-b lg:ml-2 mt-2" />
 
-          {randomUsers.length > 0 && (
+          {filteredRandomUsers.length > 0 && (
             <>
               <h3 className="lg:block hidden text-xs text-gray-600 font-semibold pt-4 pb-2 px-2">
                 Tài khoản đề xuất
               </h3>
               <ClientOnly>
                 <div className="cursor-pointer">
-                  {randomUsers.map((u, i) => (
+                  {filteredRandomUsers.map((u, i) => (
                     <MenuItemFollow key={i} user={u} />
                   ))}
                 </div>

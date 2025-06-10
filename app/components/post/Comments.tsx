@@ -57,7 +57,7 @@ export default function Comments({ params }: CommentsCompTypes) {
     <>
       <div
         id="Comments"
-        className="relative bg-[#F8F8F8] z-0 w-full h-[calc(100%-273px)] border-t-2 overflow-auto"
+        className="relative bg-[#F8F8F8] z-0 w-full h-[calc(100vh-273px)] border-t-2 overflow-auto scrollbar-hide"
       >
         <div className="pt-2" />
 

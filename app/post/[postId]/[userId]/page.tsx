@@ -151,7 +151,7 @@ export default function PostPage({ params }: PostPageTypes) {
       </div>
 
       <div className="w-full lg:max-w-[550px] h-full bg-white relative">
-        <div className="py-7" />
+        <div className="py-3" />
         <ClientOnly>
           {postById && (
             <CommentsHeader post={postById} params={{ postId: currentPostId, userId }} />

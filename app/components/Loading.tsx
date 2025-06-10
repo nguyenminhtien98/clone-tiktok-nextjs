@@ -1,6 +1,6 @@
-export default function Loading() {
+export default function Loading({ style = 'h-screen' }) {
     return (
-        <main className="flex items-center justify-center h-screen">
+        <main className={`flex items-center justify-center ${style}`}>
             <div
                 className="
           w-[20px] aspect-square rounded-full
